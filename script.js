@@ -1,3 +1,4 @@
+// Gameboard IIFE function
 const Gameboard = (function() {
 
     // 1D private array
@@ -31,7 +32,21 @@ const Gameboard = (function() {
 })();
 
 
+// Player Factory Function
+function Player(name, mark){
+    return { name, mark };
+}
+
+const player1 = Player("Player 1", "X");
+const player2 = Player("Player 2", "O");
+
+
 // test codes
+
+// testing to see if the player returns properly
+console.log(player1.name, player1.mark);
+console.log(player2.name, player2.mark);
+
 // testing to see if the board returns properly
 console.log(Gameboard.getBoard());
 
