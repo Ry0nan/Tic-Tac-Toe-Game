@@ -34,22 +34,85 @@ const Gameboard = (function() {
 
 // Player Factory Function
 function Player(name, mark){
-    return { name, mark };
+
+    const playerName = name;
+    const playerMark = mark;
+
+    const getName = () => playerName;
+    const getMark = () => playerMark;
+
+    return { getName, getMark };
+
 }
 
-const player1 = Player("Player 1", "X");
-const player2 = Player("Player 2", "O");
+// Game Controller AKA the Main Function 
+const GameController = (function() {
+
+    // players hardcoded for now
+    const player1 = Player("Player 1", "X");
+    const player2 = Player("Player 2", "O");
+
+    // player 1 gets first turn
+    let activePlayer = player1;
+
+    // switch players every turn
+    function switchPlayer() {
+        activePlayer = (activePlayer === player1) ? player2 : player1;
+    }
+
+    // play a round
+    function playRound(index) {
+        if (Gameboard.setMark(index, activePlayer.getMark())) {
+            console.log(`${activePlayer.getName()} placed 
+            ${activePlayer.getMark()} 
+            at position ${index}`);
+
+            switchPlayer();
+        } else {
+            console.log("Spot already taken! Try again.");
+        }
+    }
+
+    // get the Active Player
+    function getActivePlayer() {
+        return activePlayer;
+    }
+
+    // reset the board/game
+    function resetGame() {
+        Gameboard.resetBoard();
+        activePlayer = player1;
+    }
+
+    // return all the necessary methods
+    return {playRound, getActivePlayer,resetGame}
+
+})();
 
 
-// test codes
+// <--- TESTS --->
 
-// testing to see if the player returns properly
-console.log(player1.name, player1.mark);
-console.log(player2.name, player2.mark);
+// <--- Placing Mark Tests --->
 
-// testing to see if the board returns properly
+console.log(Gameboard.getBoard()); 
+console.log("Active Player:", GameController.getActivePlayer().getName());
+
+// Player 1 places "X" at index 0
+GameController.playRound(0);
+console.log(Gameboard.getBoard());
+console.log("Next Player:", GameController.getActivePlayer().getName());
+
+// Player 2 places "O" at index 1
+GameController.playRound(1);
+console.log(Gameboard.getBoard());
+console.log("Next Player:", GameController.getActivePlayer().getName());
+
+// Try overwriting index 0 (should fail)
+GameController.playRound(0);
 console.log(Gameboard.getBoard());
 
-// testing to see if the board properly checks if the spot is filled 
-Gameboard.setMark(0, "X"); 
-console.log(Gameboard.getBoard()); // ["X", "", "", "", "", "", "", "", ""]
+// <--- Reset Tests --->
+console.log("Resetting the game...");
+GameController.resetGame();
+console.log(Gameboard.getBoard()); // should be ["", "", "", "", "", "", "", "", ""]
+console.log("Active Player after reset:", GameController.getActivePlayer().getName()); // should be Player 1
