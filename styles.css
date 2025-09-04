@@ -1,0 +1,87 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #f4f4f4;
+    margin: 0;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(80px, 1fr));
+    grid-template-rows: repeat(3, minmax(80px, 1fr));
+    gap: 5px;
+    width: 90vw;
+    max-width: 320px;
+    aspect-ratio: 1;
+}
+
+.cell {
+    background: #fff;
+    border: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+/* Hover only applies to empty cells */
+.cell:empty:hover {
+    background: #f0f8ff;
+}
+
+/* Winning cells highlight */
+.cell.winner {
+    background: #d4edda;
+    box-shadow: 0 0 10px rgba(0, 128, 0, 0.6);
+}
+
+/* Pop-in animation for moves */
+.cell.x, .cell.o {
+    animation: popIn 0.2s ease-in;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.message {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Endgame states */
+.message.win {
+    color: #28a745;
+}
+
+.message.tie {
+    color: #ff9800;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background: #333;
+    color: white;
+    transition: background 0.2s ease;
+}
+
+button:hover {
+    background: #555;
+}
