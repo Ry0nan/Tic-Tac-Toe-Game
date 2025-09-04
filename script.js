@@ -182,41 +182,45 @@ const GameController = (function() {
 })();
 
 
+// <--- HELPER FUNCTION FOR TESTING --->
+function printBoard(board) {
+    let display = "";
+    for (let i = 0; i < 9; i += 3) {
+        display += board.slice(i, i + 3).map(cell => cell || "-").join(" | ") + "\n";
+    }
+    console.log(display);
+}
+
 // <--- TESTS --->
 
-// <--- Placing Mark Tests --->
-console.log("\n--- Placing Mark Tests ---");
+console.group("Placing Mark Tests");
 console.log(Gameboard.getBoard()); 
 console.log("Active Player:", GameController.getActivePlayer().getName());
 
-// Player 1 places "X" at index 0
-let result = GameController.playRound(0);
+let result = GameController.playRound(0); // Player 1 places "X"
 console.log(Gameboard.getBoard());
 console.log("Next Player:", GameController.getActivePlayer().getName());
-console.log("Result:", result); // should be null
+console.log("Result:", result);
 
-// Player 2 places "O" at index 1
-result = GameController.playRound(1);
+result = GameController.playRound(1); // Player 2 places "O"
 console.log(Gameboard.getBoard());
 console.log("Next Player:", GameController.getActivePlayer().getName());
-console.log("Result:", result); // should be null
+console.log("Result:", result);
 
-// Try overwriting index 0 (should fail)
-result = GameController.playRound(0);
+result = GameController.playRound(0); // Try overwriting index 0
 console.log(Gameboard.getBoard());
-console.log("Result:", result); // should be null
+console.log("Result:", result);
+console.groupEnd();
 
 
-// <--- Reset Tests --->
-console.log("\n--- Reset Tests ---");
-console.log("Resetting the game...");
+console.group("Reset Tests");
 GameController.resetGame();
 console.log(Gameboard.getBoard()); 
 console.log("Active Player after reset:", GameController.getActivePlayer().getName());
+console.groupEnd();
 
 
-// -------- ROW CHECK TEST --------
-console.log("\n--- Row Check Test ---");
+console.group("Row Check Test");
 GameController.resetGame();
 GameController.playRound(0); // X
 GameController.playRound(3); // O
@@ -225,10 +229,10 @@ GameController.playRound(4); // O
 result = GameController.playRound(2); // X wins row
 console.log("Winner should be 'X':", result);
 console.log("Board state:", Gameboard.getBoard());
+console.groupEnd();
 
 
-// -------- COLUMN CHECK TEST --------
-console.log("\n--- Column Check Test ---");
+console.group("Column Check Test");
 GameController.resetGame();
 GameController.playRound(0); // X
 GameController.playRound(1); // O
@@ -237,32 +241,33 @@ GameController.playRound(2); // O
 result = GameController.playRound(6); // X wins column
 console.log("Winner should be 'X':", result);
 console.log("Board state:", Gameboard.getBoard());
+console.groupEnd();
 
 
-// -------- DIAGONAL CHECK TEST --------
-console.log("\n--- Diagonal Check Test ---");
+console.group("Diagonal Check Test (0,4,8)");
 GameController.resetGame();
 GameController.playRound(0); // X
 GameController.playRound(1); // O
 GameController.playRound(4); // X
 GameController.playRound(2); // O
-result = GameController.playRound(8); // X wins diagonal [0,4,8]
-console.log("Diagonal winner should be 'X':", result);
+result = GameController.playRound(8); // X wins diagonal
+console.log("Winner should be 'X':", result);
 console.log("Board state:", Gameboard.getBoard());
+console.groupEnd();
 
-// Second diagonal test: [2,4,6]
+console.group("Diagonal Check Test (2,4,6)");
 GameController.resetGame();
 GameController.playRound(2); // X
 GameController.playRound(0); // O
 GameController.playRound(4); // X
 GameController.playRound(1); // O
-result = GameController.playRound(6); // X wins [2,4,6]
-console.log("Diagonal winner should be 'X':", result);
+result = GameController.playRound(6); // X wins diagonal
+console.log("Winner should be 'X':", result);
 console.log("Board state:", Gameboard.getBoard());
+console.groupEnd();
 
 
-// -------- TIE TEST --------
-console.log("\n--- Tie Check Test ---");
+console.group("Tie Check Test");
 GameController.resetGame();
 const tieMoves = [0,1,2,4,3,5,6,8,7]; 
 let tieResult;
@@ -271,3 +276,4 @@ tieMoves.forEach(index => {
 });
 console.log("Should be 'tie':", tieResult);
 console.log("Board state:", Gameboard.getBoard());
+console.groupEnd();
