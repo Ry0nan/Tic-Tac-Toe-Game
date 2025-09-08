@@ -181,6 +181,62 @@ const GameController = (function() {
 
 })();
 
+// === UI Controller ===
+const DisplayController = (function () {
+    const cells = document.querySelectorAll(".cell");
+    const message = document.querySelector(".message");
+    const resetBtn = document.getElementById("resetBtn");
+
+    // Render board to the DOM
+    function renderBoard(board) {
+        cells.forEach((cell, index) => {
+            cell.textContent = board[index];
+            cell.classList.remove("x", "o", "winner"); // reset styles
+            if (board[index] === "X") cell.classList.add("x");
+            if (board[index] === "O") cell.classList.add("o");
+        });
+    }
+
+    // Update the message text
+    function setMessage(text, type = "") {
+        message.textContent = text;
+        message.className = `message ${type}`;
+    }
+
+    // Highlight winning cells
+    function highlightWinners(indices) {
+        indices.forEach(i => cells[i].classList.add("winner"));
+    }
+
+    // Bind events
+    function bindEvents(game) {
+        cells.forEach((cell, index) => {
+            cell.addEventListener("click", () => {
+                if (!game.playRound(index)) return; // invalid move
+                renderBoard(game.getBoard());
+                setMessage(`Player ${game.getActivePlayer().getName()}'s Turn`);
+                if (game.isGameOver()) {
+                    const winner = game.getWinner();
+                    if (winner) {
+                        setMessage(`${winner.getName()} Wins! 🎉`, "win");
+                        highlightWinners(game.getWinningIndices());
+                    } else {
+                        setMessage("It's a Tie!", "tie");
+                    }
+                }
+            });
+        });
+
+        resetBtn.addEventListener("click", () => {
+            game.resetGame();
+            renderBoard(game.getBoard());
+            setMessage(`Player ${game.getActivePlayer().getName()}'s Turn`);
+        });
+    }
+
+    return { renderBoard, setMessage, bindEvents, highlightWinners };
+})();
+
 
 // <--- HELPER FUNCTION FOR TESTING --->
 function printBoard(board) {
@@ -277,3 +333,9 @@ tieMoves.forEach(index => {
 console.log("Should be 'tie':", tieResult);
 console.log("Board state:", Gameboard.getBoard());
 console.groupEnd();
+
+// === Bootstrapping ===
+const game = GameController(Player("Player 1", "X"), Player("Player 2", "O"));
+DisplayController.renderBoard(game.getBoard());
+DisplayController.setMessage(`Player ${game.getActivePlayer().getName()}'s Turn`);
+DisplayController.bindEvents(game);
